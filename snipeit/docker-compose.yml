@@ -1,0 +1,43 @@
+version: '3'
+
+services:
+  snipeit:
+    container_name: snipeit
+    hostname: snipeit
+    image: snipe/snipe-it
+    restart: always
+    logging:
+      options:
+        max-file: "3"
+        max-size: "10m"
+    #  ports:
+    #  - 8089:80
+    volumes:
+      - ./data/:/var/lib/snipeit
+      - /etc/letsencrypt/live/hamik.net/cert.pem:/var/lib/snipeit/ssl/snipeit-ssl.crt
+      - /etc/letsencrypt/live/hamik.net/privkey.pem:/var/lib/snipeit/ssl/snipeit-ssl.key
+    environment:
+      MYSQL_PORT_3306_TCP_ADDR: ${MYSQL_PORT_3306_TCP_ADDR}
+      MYSQL_PORT: ${MYSQL_PORT}
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+      APP_ENV: ${APP_ENV}
+      APP_DEBUG: ${APP_DEBUG}
+      APP_KEY: ${APP_KEY}
+      APP_URL: ${APP_URL}
+      APP_TIMEZONE: ${APP_TIMEZONE}
+      APP_LOCALE: ${APP_LOCALE}
+  snipeitdb:
+    container_name: snipeitdb
+    hostname: snipeitdb
+    image: mariadb
+    logging:
+      options:
+        max-file: "3"
+        max-size: "10m"
+    restart: always
+    volumes:
+      - ./data/db:/var/lib/mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}

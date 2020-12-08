@@ -1,0 +1,16 @@
+version: '3'
+
+services:
+  lounge:
+    container_name: lounge
+    hostname: lounge
+    image: thelounge/thelounge
+    restart: always
+    logging:
+      options:
+        max-size: "10m"
+        max-file: "3"
+    volumes:
+      - ./data:/var/opt/thelounge
+        #    ports:
+            #- "9000:9000"

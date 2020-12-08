@@ -1,0 +1,69 @@
+version: '3'
+
+services:
+  haproxy:
+    container_name: haproxy
+    hostname: haproxy
+    #    image: haproxy:latest
+    image: haproxy:latest
+    restart: always
+    logging:
+      options:
+        max-size: "10m"
+        max-file: "3"
+    volumes:
+      - ./data:/etc/haproxy
+      - ./data:/usr/local/etc/haproxy
+    ports:
+      - "443:443"
+      - "80:80"
+      - "8081:8080"
+    environment:
+      - DOCKER_HOST=${HOSTNAME}
+    networks:
+      - guacamole_default
+      - homeassistant_default
+      - kanboard_default
+      - mayanedms_default
+      - stchart_default
+      - thelounge_default
+      - gitlab_default
+      - xrdp_default
+      - pihole_default
+      - openxkpi_default
+      - grocy_default 
+      - nextcloud_default
+      - snipeit_default
+      - teedy_default
+      - heimdall_default
+networks:
+  nextcloud_default: 
+    external: true
+  guacamole_default:
+    external: true
+  homeassistant_default:
+    external: true
+  kanboard_default:
+    external: true
+  mayanedms_default:
+    external: true
+  stchart_default:
+    external: true
+  thelounge_default:
+    external: true
+  gitlab_default:
+    external: true
+  xrdp_default:
+    external: true
+  pihole_default:
+    external: true
+  openxkpi_default:
+    external: true
+  grocy_default:
+    external: true
+  snipeit_default:
+    external: true
+  teedy_default:
+    external: true
+  heimdall_default:
+    external: true

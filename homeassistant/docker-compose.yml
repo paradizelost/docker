@@ -1,0 +1,16 @@
+version: '3'
+services:
+  homeassistant:
+    container_name: home-assistant
+    image: homeassistant/home-assistant
+    logging:
+      options:
+        max-size: "10m"
+        max-file: "3"
+    volumes:
+      - ./data:/config
+      - /etc/localtime:/etc/localtime:ro
+    restart: always
+    ports:
+      - 8123:8123
+    command: bash -c "sed -i -E \"s/_TLSv1/_TLS/g\" `find / -name roomba.py -print` && python3 -m homeassistant --config /config"

@@ -1,0 +1,12 @@
+version: '2.1'
+services:
+  terminalserver:
+    image: danielguerra/ubuntu-xrdp
+    container_name: xrdp
+    hostname: ltx
+    restart: always
+    shm_size: 1g
+    volumes:
+      - ./data/:/home/
+      - ./passwd:/etc/passwd
+      - ./shadow:/etc/shadow

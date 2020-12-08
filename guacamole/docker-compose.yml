@@ -1,0 +1,67 @@
+version: '3'
+
+services:
+  guacd:
+    container_name: guacd
+    hostname: guacd
+    image: guacamole/guacd
+    restart: always
+    logging:
+      options:
+        max-size: "10m"
+        max-file: "3"
+    networks:
+      - xrdp_default
+  guacamole:
+    container_name: guacamole
+    hostname: guacamole
+    image: guacamole/guacamole
+    logging:
+      options:
+        max-size: "10m"
+        max-file: "3"
+    restart: always
+    networks:
+      - xrdp_default
+    volumes:
+      - ./data/config:/guacamole
+        #ports:
+        #    - "8080:8080"
+    environment:
+      GUACD_HOSTNAME: ${GUACD_HOSTNAME}
+      GUACAMOLE_HOME: ${GUACAMOLE_HOME}
+      MYSQL_HOSTNAME: ${MYSQL_HOSTNAME}
+      MYSQL_PORT: ${MYSQL_PORT}
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+      LDAP_HOSTNAME: ${LDAP_HOSTNAME}
+      LDAP_PORT: ${LDAP_PORT}
+      LDAP_ENCRYPTION_METHOD: ${LDAP_ENCRYPTION_METHOD}       
+      LDAP_USER_BASE_DN: ${LDAP_USER_BASE_DN}
+      LDAP_SEARCH_BIND_DN: ${LDAP_SEARCH_BIND_DN}
+      LDAP_SEARCH_BIND_PASSWORD: ${LDAP_SEARCH_BIND_PASSWORD}
+      LDAP_USERNAME_ATTRIBUTE: ${LDAP_USERNAME_ATTRIBUTE}
+      DUO_API_HOSTNAME: ${DUO_API_HOSTNAME}
+      DUO_INTEGRATION_KEY: ${DUO_INTEGRATION_KEY}
+      DUO_SECRET_KEY: ${DUO_SECRET_KEY}
+      DUO_APPLICATION_KEY: ${DUO_APPLICATION_KEY}
+  mariadb:
+    container_name: guacdb
+    hostname: guacdb
+    image: mariadb
+    restart: always
+    logging:
+      options:
+        max-size: "10m"
+        max-file: "3"
+    networks:
+      - xrdp_default
+    volumes:
+      - ./data/db:/var/lib/mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      
+networks:
+  xrdp_default:
+    external: true

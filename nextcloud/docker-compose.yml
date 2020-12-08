@@ -1,0 +1,41 @@
+version: '2'
+
+volumes:
+  nextcloud:
+  db:
+
+services:
+  db:
+    container_name: nextclouddb
+    hostname: nextclouddb
+    image: mariadb
+    logging:
+      options:
+        max-file: "3"
+        max-size: "10m"
+    command: --transaction-isolation=READ-COMMITTED --binlog-format=ROW
+    restart: always
+    volumes:
+      - ./data/db:/var/lib/mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+      MYSQL_USER: ${MYSQL_USER}
+
+  app:
+    image: nextcloud
+    container_name: nextcloud
+    hostname: nextcloud
+    logging:
+      options:
+        max-file: "3"
+        max-size: "10m"
+    ports:
+      - 8087:80
+    links:
+      - db
+    volumes:
+      - ./data/nextcloud:/var/www/html
+    restart: always
+
