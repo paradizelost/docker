@@ -1,0 +1,30 @@
+version: '3'
+services:
+  kanboard:
+    restart: always
+    image: kanboard/kanboard
+    logging:
+      options:
+        max-file: "3"
+        max-size: "10m"
+    volumes:
+     - ./data:/var/www/app/data
+     - ./plugins:/var/www/app/plugins
+     - ./ssl:/etc/nginx/ssl
+    environment:
+      DATABASE_URL: ${DATABASE_URL}
+  db:
+    restart: always
+    image: mariadb:latest
+    command: --default-authentication-plugin=mysql_native_password
+    logging:
+      options:
+        max-file: "3"
+        max-size: "10m"
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+    volumes:
+      - ./db:/var/lib/mysql
