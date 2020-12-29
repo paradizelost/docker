@@ -1,0 +1,46 @@
+import com.openkm.core.*;
+import com.openkm.api.*;
+import java.io.*;
+import com.openkm.module.db.stuff.DbSessionManager;
+ 
+String token = DbSessionManager.getInstance().getSystemToken();
+OKMDocument document = OKMDocument.getInstance();
+OKMFolder folder = OKMFolder.getInstance();
+ 
+public void autoImport(String okmPath, File fldpath){
+    try {
+        print("Scanning " + fldpath.getName() + "<br>");
+        for (File file : fldpath.listFiles()) {
+            print("Importing " + file.getName() + "<br>");
+            try {
+                if (file.isDirectory()) {
+                    try {
+                        folder.createSimple(token, okmPath + file.getName());
+                    } catch (ItemExistsException ie) {
+                        print("folder already exists<br>");
+                        // Folder already exists - just ignore exception
+                    }
+                    autoImport( okmPath + file.getName() + "/", file);
+                } else {
+                    // Check if file is still being written to
+                    long length = file.length();
+                    Thread.sleep(1000);
+                    if (file.length() > length) continue;  // Skip file this time
+                    FileInputStream fis = new FileInputStream(file);
+                    document.createSimple(token, okmPath + file.getName(), fis);
+                    fis.close();
+                }
+                print("Created " + okmPath + file.getName() + "<br>");
+            } catch (Exception e) {
+                print ("Exception:" + e + "<br>");
+                // Something bad happened to prevent import. Skip to next file.
+                continue;
+            }
+            file.delete();
+        }
+    } catch (Exception e) {
+        print("Exception: " + e + "<br>");
+    }
+}
+ 
+autoImport("/okm:root/Imported Items/Scans/", new File("/import/DocumentImport/Live"));
